@@ -1,0 +1,25 @@
+#myTab {
+  background-color: #dee2e6;
+}
+
+.active-tab {
+  border-radius: 0px 50px 50px 0px !important;
+  color: white !important;
+  background-color: #006ab3 !important;
+}
+
+.form-group > label {
+  top: 13px;
+  left: 6px;
+  position: relative;
+  background-color: white;
+  padding: 0px 5px 0px 5px;
+  font-size: 0.9em;
+}
+
+.text-danger {
+  color: red;
+  top: 15px;
+  left: 0px;
+  position: relative;
+}
