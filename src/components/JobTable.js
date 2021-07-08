@@ -4,6 +4,7 @@ import AddNewJob from './JobCard/AddNewJob'
 function JobTable() {
   const [showPopup, setshowPopup] = useState(false)
   const [obj, setObj] = useState({})
+  const [id, setID] = useState(0)
   const [data, setData] = useState(JobData)
   const openPopup = (id) => {
     let NewList = data.filter((row) => {
@@ -11,17 +12,27 @@ function JobTable() {
     })
     setshowPopup(true)
     setObj(NewList[0])
+    setID(id)
   }
 
   const handleClose = () => {
     setshowPopup(false)
     setObj({})
+    setID(0)
   }
 
   const handleSave = (obj) => {
-    obj.id = data[0].id + 1
+    let len = data.length
     let NewList = [...data]
-    NewList = NewList.concat(obj)
+    var foundIndex = NewList.findIndex((x) => x.id === obj.id)
+    if (foundIndex !== -1) {
+      NewList[foundIndex] = obj
+    } else {
+      obj.id = data[len - 1].id + 1
+      NewList = NewList.concat(obj)
+    }
+
+    console.log('For Save and updated', NewList)
     setData(NewList)
     handleClose()
   }
@@ -32,6 +43,7 @@ function JobTable() {
         obj={obj}
         onClose={handleClose}
         onSave={(obj) => handleSave(obj)}
+        id={id}
       />
     )
   }
@@ -70,7 +82,7 @@ function JobTable() {
                       return (
                         <tr>
                           <td>{row.lookingFor}</td>
-                          <td>{row.careerLevel}</td>
+                          <td>{row.experience}</td>
                           <td>
                             <button
                               type="button"

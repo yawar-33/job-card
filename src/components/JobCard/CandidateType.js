@@ -16,7 +16,9 @@ function CandidateType(props) {
               name="hourlyRate"
               value={props.model.hourlyRate}
               onChange={props.handleChange}
+              onKeyPress={props.KeyPressHandle}
             />
+            {props.validation.valhourlyRate}
           </div>
         </div>
         <div className="col-md-6">

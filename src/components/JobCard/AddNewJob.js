@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import JobInformation from './JobInformation'
 import CandidateType from './CandidateType'
+import ShiftTimming from './ShiftTimming'
 export default class AddNewJob extends Component {
   constructor(props) {
     super(props)
@@ -22,12 +23,14 @@ export default class AddNewJob extends Component {
     this.initValidateModel = {
       vallookingFor: '',
       valexperience: '',
+      valhourlyRate: '',
+
       isvalid: false,
     }
     this.state = {
-      editID: this.props.obj.id,
+      editID: this.props.id,
       step: 1,
-      initModel: this.props.obj.id > 0 ? this.props.obj : this.initModel,
+      initModel: this.props.obj !== undefined ? this.props.obj : this.initModel,
       initValidateModel: this.initValidateModel,
     }
   }
@@ -41,7 +44,14 @@ export default class AddNewJob extends Component {
       },
     })
   }
-
+  handleNumericCheck(event) {
+    if (event.charCode >= 48 && event.charCode <= 57) {
+      return true
+    } else {
+      event.preventDefault()
+      return false
+    }
+  }
   Stepper = () => {
     switch (this.state.step) {
       case 1:
@@ -58,10 +68,17 @@ export default class AddNewJob extends Component {
             model={this.state.initModel}
             handleChange={(e) => this.handleChange(e)}
             validation={this.state.initValidateModel}
+            KeyPressHandle={(event) => this.handleNumericCheck(event)}
           />
         )
       case 3:
-        return 'test2'
+        return (
+          <ShiftTimming
+            model={this.state.initModel}
+            handleChange={(e) => this.handleChange(e)}
+            validation={this.state.initValidateModel}
+          />
+        )
     }
   }
   validateStep = () => {
@@ -89,6 +106,37 @@ export default class AddNewJob extends Component {
         valModel.valexperience = ''
         valModel.isvalid = false
       }
+      this.setState({
+        initValidateModel: valModel,
+      })
+      if (valModel.isvalid) {
+        return true
+      }
+    }
+
+    if (this.state.step === 2) {
+      if (this.state.initModel.hourlyRate === '') {
+        valModel.valhourlyRate = (
+          <div className="invalid-feedback" style={{ display: 'block' }}>
+            Enter Hours
+          </div>
+        )
+        valModel.isvalid = true
+      } else if (
+        this.state.initModel.hourlyRate !== '' &&
+        this.state.initModel.hourlyRate < 10
+      ) {
+        valModel.valhourlyRate = (
+          <div className="invalid-feedback" style={{ display: 'block' }}>
+            Value Should be greater then 10
+          </div>
+        )
+        valModel.isvalid = true
+      } else {
+        valModel.valhourlyRate = ''
+        valModel.isvalid = false
+      }
+
       this.setState({
         initValidateModel: valModel,
       })
