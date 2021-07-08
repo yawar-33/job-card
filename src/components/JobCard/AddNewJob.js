@@ -19,11 +19,26 @@ export default class AddNewJob extends Component {
       careerLevel: 'Entry',
       equipmentSpecification: '',
       gender: 'Male',
+      sundayStTime: '',
+      mondayStTime: '',
+      sundayEnTime: '',
+      mondayEnTime: '',
+      tuesStTime: '',
+      tuesEnTime: '',
+      wedStTime: '',
+      wedEnTime: '',
+      thusStTime: '',
+      thusEnTime: '',
+      friEnTime: '',
+      friStTime: '',
+      saturStTime: '',
+      saturEnTime: '',
     }
     this.initValidateModel = {
       vallookingFor: '',
       valexperience: '',
       valhourlyRate: '',
+      valSameTime: '',
 
       isvalid: false,
     }
@@ -32,9 +47,18 @@ export default class AddNewJob extends Component {
       step: 1,
       initModel: this.props.obj !== undefined ? this.props.obj : this.initModel,
       initValidateModel: this.initValidateModel,
+      day1: '',
+      day2: '',
     }
   }
 
+  dayClick = (value) => {
+    if (this.state.day1 === '') {
+      this.setState({ day1: value })
+    } else if (this.state.day2 === '') {
+      this.setState({ day2: value })
+    }
+  }
   handleChange = (e) => {
     const { name, value } = e.target
     this.setState({
@@ -77,6 +101,9 @@ export default class AddNewJob extends Component {
             model={this.state.initModel}
             handleChange={(e) => this.handleChange(e)}
             validation={this.state.initValidateModel}
+            day1={this.state.day1}
+            day2={this.state.day2}
+            dayHandler={(value) => this.dayClick(value)}
           />
         )
     }
@@ -144,8 +171,122 @@ export default class AddNewJob extends Component {
         return true
       }
     }
+
+    if (this.state.step === 3) {
+      if (this.state.day1 === '' || this.state.day2 === '') {
+        valModel.valSameTime = (
+          <div className="invalid-feedback" style={{ display: 'block' }}>
+            Select at least 2 days
+          </div>
+        )
+        valModel.isvalid = true
+      } else {
+        valModel.valSameTime = ''
+        valModel.isvalid = false
+      }
+      this.setState({
+        initValidateModel: valModel,
+      })
+      if (valModel.isvalid) {
+        return true
+      }
+      if (this.state.day1 === 'M' || this.state.day2 === 'M') {
+        if (
+          this.state.initModel.mondayEnTime === '' ||
+          this.state.initModel.mondayStTime === ''
+        ) {
+          valModel.valSameTime = (
+            <div className="invalid-feedback" style={{ display: 'block' }}>
+              Select at least 2 days
+            </div>
+          )
+          valModel.isvalid = true
+        } else {
+          valModel.valSameTime = ''
+          valModel.isvalid = false
+        }
+      }
+
+      if (this.state.day1 === 'T' || this.state.day2 === 'T') {
+        if (
+          this.state.initModel.tuesEnTime === '' ||
+          this.state.initModel.tuesStTime === ''
+        ) {
+          valModel.valSameTime = (
+            <div className="invalid-feedback" style={{ display: 'block' }}>
+              Select at least 2 days
+            </div>
+          )
+          valModel.isvalid = true
+        } else {
+          valModel.valSameTime = ''
+          valModel.isvalid = false
+        }
+      }
+
+      if (this.state.day1 === 'W' || this.state.day2 === 'W') {
+        if (
+          this.state.initModel.wedEnTime === '' ||
+          this.state.initModel.wedStTime === ''
+        ) {
+          valModel.valSameTime = (
+            <div className="invalid-feedback" style={{ display: 'block' }}>
+              Select at least 2 days
+            </div>
+          )
+          valModel.isvalid = true
+        } else {
+          valModel.valSameTime = ''
+          valModel.isvalid = false
+        }
+      }
+      if (this.state.day1 === 'Tu' || this.state.day2 === 'Tu') {
+        if (
+          this.state.initModel.thusEnTime === '' ||
+          this.state.initModel.thusStTime === ''
+        ) {
+          valModel.valSameTime = (
+            <div className="invalid-feedback" style={{ display: 'block' }}>
+              Select at least 2 days
+            </div>
+          )
+          valModel.isvalid = true
+        } else {
+          valModel.valSameTime = ''
+          valModel.isvalid = false
+        }
+      }
+      if (this.state.day1 === 'F' || this.state.day2 === 'F') {
+        if (
+          this.state.initModel.friEnTime === '' ||
+          this.state.initModel.friStTime === ''
+        ) {
+          valModel.valSameTime = (
+            <div className="invalid-feedback" style={{ display: 'block' }}>
+              Select at least 2 days
+            </div>
+          )
+          valModel.isvalid = true
+        } else {
+          valModel.valSameTime = ''
+          valModel.isvalid = false
+        }
+      }
+
+      this.setState({
+        initValidateModel: valModel,
+      })
+      if (valModel.isvalid) {
+        return true
+      }
+    }
   }
 
+  save = () => {
+    let validation = this.validateStep()
+    if (validation) return
+    this.props.onSave(this.state.initModel)
+  }
   handleNext = () => {
     let validation = this.validateStep()
     if (validation) return
@@ -159,12 +300,13 @@ export default class AddNewJob extends Component {
     })
   }
   render() {
-    console.log('State', this.state)
     return (
       <>
         <div
           className={
-            this.state.editID === -1 ? 'modal fade' : 'modal fade show'
+            this.state.editID === -1
+              ? 'modal fade'
+              : 'modal fade show bd-example-modal-lg'
           }
           style={{
             display: this.state.editID === -1 ? 'none' : 'block',
@@ -174,7 +316,7 @@ export default class AddNewJob extends Component {
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header">
                 <h5
@@ -270,6 +412,7 @@ export default class AddNewJob extends Component {
                     Previous
                   </button>
                 ) : null}
+
                 {this.state.step < 3 ? (
                   <button
                     type="button"
@@ -284,7 +427,7 @@ export default class AddNewJob extends Component {
                     type="button"
                     className="btn btn-primary"
                     style={{ float: 'right', backgroundColor: '#006BB3' }}
-                    onClick={() => this.props.onSave(this.state.initModel)}
+                    onClick={() => this.save()}
                   >
                     Save
                   </button>

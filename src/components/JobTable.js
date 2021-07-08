@@ -1,11 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { JobData } from '../utilities/JobsData'
 import AddNewJob from './JobCard/AddNewJob'
-function JobTable() {
+
+import notificationAction from '../../src/actions/notificationAction'
+import { bindActionCreators } from 'redux'
+import { connect, useSelector } from 'react-redux'
+
+function JobTable(props) {
+  const Notification = useSelector((state) => state.notification)
   const [showPopup, setshowPopup] = useState(false)
   const [obj, setObj] = useState({})
   const [id, setID] = useState(0)
   const [data, setData] = useState(JobData)
+  const [dropdown, setDropdown] = useState(false)
   const openPopup = (id) => {
     let NewList = data.filter((row) => {
       return row.id === id
@@ -15,6 +22,9 @@ function JobTable() {
     setID(id)
   }
 
+  useEffect(() => {
+    props.notificationAction(data.length)
+  }, [data])
   const handleClose = () => {
     setshowPopup(false)
     setObj({})
@@ -35,6 +45,10 @@ function JobTable() {
     console.log('For Save and updated', NewList)
     setData(NewList)
     handleClose()
+  }
+
+  const dropDownHandle = () => {
+    setDropdown(!dropdown)
   }
   let popup = ''
   if (showPopup) {
@@ -57,7 +71,20 @@ function JobTable() {
                 {' '}
                 <h4>List of All Jobs Posted</h4>
               </div>
-              <div className="col-md-2">
+
+              <div className="col-md-2" style={{display:"contents"}}>
+                <div class="dropdown">
+                  <i class="fas fa-bell" onClick={dropDownHandle}></i>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                    style={{ display: dropdown ? 'block' : 'none' }}
+                  >
+                    <a class="dropdown-item" href="#">
+                      Total Jobs Added are {Notification}
+                    </a>
+                  </div>
+                </div>
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -110,5 +137,12 @@ function JobTable() {
     </>
   )
 }
-
-export default JobTable
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      notificationAction: notificationAction,
+    },
+    dispatch,
+  )
+}
+export default connect(null, matchDispatchToProps)(JobTable)
